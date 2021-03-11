@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import './App.css';
+let idForSaveButton;
 
 function App() {
   const [list, setList] = useState([{
@@ -41,12 +42,32 @@ function App() {
     });
   }
   const editPost = (id) => {
+    idForSaveButton = id;
     fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
         .then((response) => response.json())
         .then((json) => {
           setEditFormInputValueTask(json.title);
           setEditFormInputValueBody(json.body);
         });
+  }
+  
+  const save = () => {
+    console.log(idForSaveButton);
+    fetch(`https://jsonplaceholder.typicode.com/posts/${idForSaveButton}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        id:`${idForSaveButton}`,
+        title: `${editFormInputValueTask}`,
+        body: `${editFormInputValueBody}`,
+        userId: 1,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+  
   }
  
   return (
@@ -61,7 +82,7 @@ function App() {
           <textarea name="" id="" cols="40" rows="10"
                     value={editFormInputValueBody}
                     onChange={e=> setEditFormInputValueBody(e.target.value)}> </textarea>
-          <button>Save</button>
+          <button onClick={save}>Save</button>
         </div>
         
         
