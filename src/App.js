@@ -1,8 +1,9 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import './App.css';
-let idForSaveButton;
+
 
 function App() {
+  const idForSaveButton = useRef(null)
   const [list, setList] = useState([{
     id: 1,
     title: 'First Item'
@@ -42,7 +43,7 @@ function App() {
     });
   }
   const editPost = (id) => {
-    idForSaveButton = id;
+    idForSaveButton.current = id;
     fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
         .then((response) => response.json())
         .then((json) => {
@@ -52,11 +53,11 @@ function App() {
   }
   
   const save = () => {
-    console.log(idForSaveButton);
-    fetch(`https://jsonplaceholder.typicode.com/posts/${idForSaveButton}`, {
+    console.log(idForSaveButton.current);
+    fetch(`https://jsonplaceholder.typicode.com/posts/${idForSaveButton.current}`, {
       method: 'PUT',
       body: JSON.stringify({
-        id:`${idForSaveButton}`,
+        id:`${idForSaveButton.current}`,
         title: `${editFormInputValueTask}`,
         body: `${editFormInputValueBody}`,
         userId: 1,
